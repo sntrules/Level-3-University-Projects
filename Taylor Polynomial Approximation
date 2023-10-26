@@ -1,0 +1,37 @@
+import math
+import matplotlib.pyplot as plt
+
+def errfun(z, N):
+    result = 0
+    for n in range(N + 1):
+        result += ((-1) ** n * z ** (2 * n + 1)) / ((2 * n + 1) * math.factorial(n)) 
+    return (2 / math.sqrt(math.pi)) * result
+
+def ErrSequence(z, eps):
+    n = 0
+    err_list = []
+    while True:
+        approx_value = errfun(z, n)
+        true_value = math.erf(z)
+        diff = abs(approx_value - true_value)
+        if diff <= eps:
+            break
+        err_list.append(diff)
+        n += 1
+    return err_list
+
+# MAIN SCRIPT - check brackets in first 2 def's
+z_values = [0.1, 1.0, 2.0, 3.0]
+eps_values = [1e-15, 1e-15, 1e-15, 1e-13]
+
+for i in range(len(z_values)):
+    z = z_values[i]
+    eps = eps_values[i]
+    err_list = ErrSequence(z, eps)
+    plt.plot(range(len(err_list)), err_list, label=f'z={z}')
+
+plt.yscale('log')
+plt.xlabel('Number of Iterations')
+plt.ylabel('Log(Absolute Difference)')
+plt.legend()
+plt.savefig('error_plot.pdf')
